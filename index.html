@@ -1,0 +1,1186 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="dark scroll-smooth">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>VIVIENNE WESTWOOD | The Satellite ORB Collection</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        punk: {
+                            black: '#000000',
+                            carbon: '#0D0D0D',
+                            card: '#141414',
+                            border: '#262626',
+                            mid: '#666666',
+                            light: '#E5E5E5',
+                            white: '#FFFFFF'
+                        }
+                    },
+                    fontFamily: {
+                        serif: ['Cinzel', 'Playfair Display', 'Georgia', 'serif'],
+                        sans: ['Montserrat', 'Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800;900&family=Montserrat:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Three.js CDN for 360 Interactive 3D Viewer -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <style>
+        /* Base Styling */
+        body {
+            background-color: #000000;
+            color: #E5E5E5;
+            cursor: none; /* Hide default mouse pointer on desktop */
+            font-family: 'Montserrat', sans-serif;
+            overflow-x: hidden;
+            /* Subtle 1.5% Tartan Geometric Grid Pattern */
+            background-image: 
+                linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+            background-size: 60px 60px;
+        }
+
+        .font-cinzel {
+            font-family: 'Cinzel', serif;
+        }
+
+        /* Custom Cursor Elements */
+        #cursor-dot {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 5px;
+            background-color: #FFFFFF;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 8px #ffffff;
+            transition: width 0.2s, height 0.2s, background-color 0.2s;
+        }
+
+        #cursor-orb {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 52px;
+            height: 52px;
+            pointer-events: none;
+            z-index: 9998;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s ease, height 0.3s ease, opacity 0.3s ease;
+            opacity: 0.7;
+        }
+
+        /* Hover active state for cursor */
+        body.cursor-hover #cursor-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #FFFFFF;
+        }
+
+        body.cursor-hover #cursor-orb {
+            width: 76px;
+            height: 76px;
+            opacity: 1;
+        }
+
+        /* Disable custom cursor on mobile / touch devices */
+        @media (pointer: coarse) {
+            body { cursor: auto; }
+            #cursor-dot, #cursor-orb { display: none !important; }
+        }
+
+        /* Glassmorphism Styling */
+        .glass-panel {
+            background: rgba(13, 13, 13, 0.85);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        /* High-fashion typography gradient */
+        .monochrome-gradient-text {
+            background: linear-gradient(180deg, #FFFFFF 0%, #888888 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Button hover shine animation */
+        .btn-shine {
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-shine::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(60deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transform: rotate(30deg) translateY(-100%);
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .btn-shine:hover::after {
+            transform: rotate(30deg) translateY(100%);
+        }
+
+        /* Scroll Reveal Transitions */
+        .reveal {
+            opacity: 0;
+            transform: translateY(35px);
+            transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Continuous Infinite Marquee */
+        @keyframes marquee {
+            0% { transform: translateX(0%); }
+            100% { transform: translateX(-50%); }
+        }
+        .animate-marquee {
+            display: flex;
+            width: 200%;
+            animation: marquee 22s linear infinite;
+        }
+
+        /* Saturn Emblem Rotation */
+        @keyframes orbRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .animate-orb-spin {
+            animation: orbRotate 20s linear infinite;
+        }
+
+        /* Modal Overlay Transition */
+        .modal-active {
+            display: flex !important;
+            animation: fadeInModal 0.3s forwards ease-out;
+        }
+        @keyframes fadeInModal {
+            from { opacity: 0; transform: scale(0.97); }
+            to { opacity: 1; transform: scale(1); }
+        }
+    </style>
+</head>
+<body class="selection:bg-white selection:text-black relative">
+
+    <div id="cursor-dot"></div>
+    <div id="cursor-orb">
+        <svg viewBox="0 0 100 100" class="w-full h-full text-white fill-current animate-orb-spin">
+            <path d="M50 15 L53 25 L63 25 L55 31 L58 41 L50 35 L42 41 L45 31 L37 25 L47 25 Z" />
+            <ellipse cx="50" cy="58" rx="42" ry="14" fill="none" stroke="currentColor" stroke-width="1.8" transform="rotate(-15 50 58)" />
+            <circle cx="50" cy="58" r="18" fill="none" stroke="currentColor" stroke-width="2" />
+            <path d="M12 50 Q50 35 88 50" fill="none" stroke="currentColor" stroke-width="1.2" />
+        </svg>
+    </div>
+
+    <header class="fixed top-0 left-0 w-full z-50 glass-panel border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <a href="#hero" class="interactive-hover font-cinzel text-lg md:text-2xl font-black tracking-[0.25em] text-white">
+                VIVIENNE WESTWOOD
+            </a>
+            
+            <nav class="hidden lg:flex space-x-8 text-[11px] tracking-[0.25em] font-medium uppercase">
+                <a href="#hero" class="interactive-hover hover:text-white text-neutral-400 transition-colors">Hero</a>
+                <a href="#viewer3d" class="interactive-hover hover:text-white text-neutral-400 transition-colors">3D Viewer</a>
+                <a href="#heritage" class="interactive-hover hover:text-white text-neutral-400 transition-colors">Heritage</a>
+                <a href="#craftsmanship" class="interactive-hover hover:text-white text-neutral-400 transition-colors">Craftsmanship</a>
+                <a href="#reviews" class="interactive-hover hover:text-white text-neutral-400 transition-colors">Press</a>
+                <a href="#authenticity" class="interactive-hover hover:text-white text-neutral-400 transition-colors">Authenticity</a>
+                <a href="#cta" class="interactive-hover hover:text-white text-neutral-400 transition-colors">Collection</a>
+            </nav>
+
+            <div class="flex items-center space-x-4">
+                <a href="#cta" class="interactive-hover hidden sm:inline-block border border-white/40 px-6 py-2.5 text-xs tracking-[0.25em] uppercase hover:bg-white hover:text-black transition-all font-semibold">
+                    BUY NOW
+                </a>
+                <button id="mobile-menu-btn" class="interactive-hover lg:hidden text-white p-2">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Menu -->
+        <div id="mobile-menu" class="hidden lg:hidden bg-punk-black border-b border-white/10 px-6 py-6 space-y-4 text-xs uppercase tracking-widest text-neutral-400">
+            <a href="#hero" class="block hover:text-white py-1">Hero</a>
+            <a href="#viewer3d" class="block hover:text-white py-1">3D ORB Viewer</a>
+            <a href="#heritage" class="block hover:text-white py-1">Heritage</a>
+            <a href="#craftsmanship" class="block hover:text-white py-1">Craftsmanship</a>
+            <a href="#reviews" class="block hover:text-white py-1">Press Reviews</a>
+            <a href="#authenticity" class="block hover:text-white py-1">Authenticity Check</a>
+            <a href="#cta" class="block hover:text-white py-1">Collection</a>
+        </div>
+    </header>
+
+    <section id="hero" class="min-h-screen pt-28 pb-16 flex items-center justify-center relative overflow-hidden border-b border-white/10">
+        
+        <!-- Parallax Background Typography Layer -->
+        <div id="hero-parallax-bg" class="absolute inset-0 flex items-center justify-center pointer-events-none select-none opacity-5 transition-transform duration-75">
+            <span class="font-cinzel text-[18vw] font-black tracking-tighter text-white whitespace-nowrap">
+                WESTWOOD
+            </span>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10 w-full">
+            
+            <!-- Left Editorial Text Content -->
+            <div class="lg:col-span-6 space-y-8">
+                <div class="space-y-3">
+                    <div class="flex items-center space-x-3 text-xs tracking-[0.35em] text-neutral-400 font-semibold uppercase">
+                        <span class="w-8 h-[1px] bg-white/40"></span>
+                        <span>BRITISH PUNK COUTURE</span>
+                    </div>
+                    <h1 class="font-cinzel text-4xl sm:text-6xl md:text-7xl font-black tracking-tight leading-[0.95] uppercase monochrome-gradient-text">
+                        SATELLITE ORB
+                    </h1>
+                    <p class="font-cinzel text-sm sm:text-base tracking-[0.2em] text-neutral-400 uppercase font-light">
+                        TRADITION WITH A REBELLION
+                    </p>
+                </div>
+
+                <p class="text-neutral-400 text-sm md:text-base leading-relaxed font-light max-w-xl">
+                    融合英國皇室加冕寶球與土星環的次文化圖騰。自 1980 年代問世以來，Vivienne Westwood ORB 衛星項鍊便打破了高奢珠寶與街頭龐克的劃時代界線，成為優雅與叛逆共存的永恆經典。
+                </p>
+
+                <!-- High-Contrast Action Buttons -->
+                <div class="flex flex-col sm:flex-row gap-5 pt-4">
+                    <a href="#cta" class="interactive-hover btn-shine bg-white text-black font-extrabold text-center px-8 py-4 text-xs tracking-[0.3em] uppercase hover:bg-neutral-200 transition rounded-none">
+                        BUY NOW / 立即典藏
+                    </a>
+                    <a href="#viewer3d" class="interactive-hover border border-white/30 text-white text-center font-semibold px-8 py-4 text-xs tracking-[0.3em] uppercase hover:border-white hover:bg-white/5 transition rounded-none flex items-center justify-center space-x-2">
+                        <i data-lucide="box" class="w-4 h-4 inline"></i>
+                        <span>EXPLORE 3D ORB</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Right Vector ORB Visual Display (Parallax Foreground) -->
+            <div id="hero-parallax-fg" class="lg:col-span-6 relative flex justify-center items-center transition-transform duration-75">
+                <div class="relative w-full max-w-md aspect-square glass-panel p-8 rounded-none shadow-2xl flex flex-col justify-between items-center border border-white/20 overflow-hidden group">
+                    
+                    <!-- Decorative Corner Crosses -->
+                    <span class="absolute top-3 left-3 text-[10px] font-mono text-neutral-500">+ VW-UK-430</span>
+                    <span class="absolute top-3 right-3 text-[10px] font-mono text-neutral-500">SPEC // 1986</span>
+                    
+                    <!-- High-Precision Graphic Vector Badge -->
+                    <div class="w-full h-full flex items-center justify-center my-auto relative">
+                        <div class="absolute inset-0 bg-white/5 rounded-full filter blur-3xl"></div>
+                        <svg viewBox="0 0 200 200" class="w-72 h-72 text-white drop-shadow-[0_0_30px_rgba(255,255,255,0.25)] group-hover:scale-105 transition-transform duration-700">
+                            <!-- Sovereign Orb Cross -->
+                            <rect x="96" y="16" width="8" height="26" fill="currentColor" rx="1"/>
+                            <rect x="87" y="25" width="26" height="8" fill="currentColor" rx="1"/>
+                            <circle cx="100" cy="16" r="4" fill="currentColor"/>
+                            <!-- Central Sphere -->
+                            <circle cx="100" cy="100" r="48" fill="none" stroke="currentColor" stroke-width="2.5"/>
+                            <circle cx="100" cy="100" r="42" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="4,4"/>
+                            <!-- Saturn Ellipse Ring -->
+                            <ellipse cx="100" cy="105" rx="88" ry="24" fill="none" stroke="currentColor" stroke-width="2.8" transform="rotate(-14 100 105)"/>
+                            <ellipse cx="100" cy="105" rx="96" ry="28" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="6,4" transform="rotate(-14 100 105)"/>
+                            <!-- Structural Jewels Dots -->
+                            <circle cx="100" cy="68" r="3.5" fill="currentColor"/>
+                            <circle cx="78" cy="100" r="3.5" fill="currentColor"/>
+                            <circle cx="122" cy="100" r="3.5" fill="currentColor"/>
+                            <circle cx="100" cy="132" r="3.5" fill="currentColor"/>
+                        </svg>
+                    </div>
+
+                    <div class="w-full glass-panel p-4 border border-white/10 flex justify-between items-center z-10">
+                        <div>
+                            <p class="text-xs font-cinzel font-bold text-white tracking-widest">SATELLITE ORB EMBLEM</p>
+                            <p class="text-[10px] text-neutral-400 tracking-wider uppercase">ARCHIVAL COUTURE SPECIFICATION</p>
+                        </div>
+                        <span class="text-[10px] font-mono text-white tracking-widest border border-white/30 px-2 py-1 uppercase">ORIGINAL</span>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <div class="py-4 bg-white text-black font-extrabold uppercase text-xs tracking-[0.35em] overflow-hidden transform -rotate-1 border-y border-white my-8 select-none">
+        <div class="animate-marquee whitespace-nowrap">
+            <span class="mx-8">TOO FAST TO LIVE, TOO YOUNG TO DIE ★</span>
+            <span class="mx-8">VIVIENNE WESTWOOD PUNK HERITAGE ★</span>
+            <span class="mx-8">TRADITION WITH A REBELLION ★</span>
+            <span class="mx-8">SATELLITE ORB COLLECTION ★</span>
+            <span class="mx-8">TOO FAST TO LIVE, TOO YOUNG TO DIE ★</span>
+            <span class="mx-8">VIVIENNE WESTWOOD PUNK HERITAGE ★</span>
+            <span class="mx-8">TRADITION WITH A REBELLION ★</span>
+            <span class="mx-8">SATELLITE ORB COLLECTION ★</span>
+        </div>
+    </div>
+
+    <section id="viewer3d" class="py-24 border-b border-white/10 bg-punk-carbon relative">
+        <div class="max-w-7xl mx-auto px-6">
+            
+            <div class="text-center max-w-3xl mx-auto mb-12 space-y-3 reveal">
+                <span class="text-xs tracking-[0.35em] text-neutral-400 uppercase font-semibold">360° REALTIME MODEL</span>
+                <h2 class="font-cinzel text-3xl md:text-5xl font-black text-white tracking-wide uppercase">
+                    360° 互動式 3D ORB 擬真檢視器
+                </h2>
+                <p class="text-neutral-400 text-sm font-light leading-relaxed">
+                    按住滑鼠或手指拖曳，可於三維空間中自由旋轉觀賞金屬反光與極致工藝細節。
+                </p>
+            </div>
+
+            <!-- 3D Canvas Box container -->
+            <div class="glass-panel p-4 md:p-8 border border-white/20 relative min-h-[500px] flex flex-col items-center justify-center reveal">
+                
+                <!-- WebGL Render Canvas -->
+                <div id="threejs-container" class="w-full h-[420px] md:h-[500px] cursor-grab active:cursor-grabbing relative overflow-hidden rounded-none"></div>
+
+                <!-- 3D Overlay Guidance & Controls -->
+                <div class="absolute top-6 left-6 flex flex-col space-y-1 pointer-events-none">
+                    <span class="text-[10px] font-mono text-neutral-400 uppercase tracking-widest">+ MODEL: VW-ORB-3D-V1</span>
+                    <span class="text-[10px] font-mono text-neutral-500 uppercase tracking-widest">DRAG TO ROTATE 360°</span>
+                </div>
+
+                <div class="absolute top-6 right-6 flex items-center space-x-2 z-10">
+                    <button id="btn-spin-toggle" class="interactive-hover bg-punk-black border border-white/30 text-white text-[11px] font-mono px-3 py-1.5 hover:bg-white hover:text-black transition uppercase">
+                        PAUSE AUTO-SPIN
+                    </button>
+                    <button id="btn-reset-3d" class="interactive-hover bg-punk-black border border-white/30 text-white text-[11px] font-mono px-3 py-1.5 hover:bg-white hover:text-black transition uppercase">
+                        RESET VIEW
+                    </button>
+                </div>
+
+                <!-- Finish Selector Controls -->
+                <div class="w-full border-t border-white/10 pt-4 mt-4 flex flex-col sm:flex-row items-center justify-between gap-4 z-10">
+                    <div class="flex items-center space-x-3">
+                        <span class="text-xs font-mono text-neutral-400 uppercase tracking-wider">METAL FINISH:</span>
+                        <button id="finish-silver" class="interactive-hover border border-white text-white px-3 py-1 text-xs font-mono uppercase bg-white/20">PALLADIUM SILVER</button>
+                        <button id="finish-ruthenium" class="interactive-hover border border-white/30 text-neutral-400 px-3 py-1 text-xs font-mono uppercase hover:text-white">BLACK RUTHENIUM</button>
+                        <button id="finish-gold" class="interactive-hover border border-white/30 text-neutral-400 px-3 py-1 text-xs font-mono uppercase hover:text-white">ANTIQUE PALE GOLD</button>
+                    </div>
+
+                    <div class="text-xs font-mono text-neutral-500 uppercase tracking-widest">
+                        WEBGL HIGH-PRECISION RENDER
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+    <section id="heritage" class="py-32 border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-6">
+            
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+                
+                <!-- Left Editorial Giant Year Block -->
+                <div class="lg:col-span-5 reveal">
+                    <div class="border border-white/20 p-10 glass-panel relative flex flex-col justify-between min-h-[420px]">
+                        <span class="font-cinzel text-8xl md:text-9xl font-black text-white/10 absolute top-4 left-4 select-none">1971</span>
+                        
+                        <div class="z-10 space-y-6 my-auto">
+                            <div class="w-12 h-12 border border-white/40 flex items-center justify-center">
+                                <i data-lucide="crown" class="w-6 h-6 text-white"></i>
+                            </div>
+                            <h3 class="font-cinzel text-2xl font-black text-white tracking-widest uppercase">
+                                430 KINGS ROAD, LONDON
+                            </h3>
+                            <p class="text-xs font-mono text-neutral-400 tracking-widest uppercase leading-relaxed">
+                                "WORLD'S END / SEDITIONARIES"
+                            </p>
+                            <p class="text-xs text-neutral-400 font-light leading-relaxed">
+                                70 年代倫敦 Kings Road 430 號的龐克革命發源地。Vivienne Westwood 與 Malcolm McLaren 在此徹底翻轉了當代流行文化的定義。
+                            </p>
+                        </div>
+
+                        <div class="border-t border-white/10 pt-4 flex justify-between items-center text-[10px] font-mono text-neutral-500 uppercase tracking-widest">
+                            <span>ARCHIVAL DOSSIER</span>
+                            <span>LONDON PUNK ORIGIN</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Brand Story Narrative -->
+                <div class="lg:col-span-7 space-y-8 reveal">
+                    <div class="space-y-3">
+                        <span class="text-xs tracking-[0.35em] text-neutral-400 font-semibold uppercase block">
+                            HERITAGE & REBELLION STORY
+                        </span>
+                        <h2 class="font-cinzel text-3xl sm:text-5xl font-black text-white tracking-tight uppercase leading-tight">
+                            將英國皇室寶球<br/>帶入科幻未來
+                        </h2>
+                    </div>
+
+                    <p class="text-neutral-400 text-sm md:text-base leading-relaxed font-light">
+                        1980 年代，Vivienne Westwood 在設計 Harris Tweed 系列時，巧思將象徵英國皇家加冕的主權寶球（Sovereign's Orb）與象徵科幻未來的土星環結合。這項設計完美呈現了「攜帶傳統走向未來（Taking tradition into the future）」的精神核心。
+                    </p>
+
+                    <!-- Key Milestones Grid -->
+                    <div class="grid grid-cols-2 gap-8 border-t border-white/10 pt-8">
+                        <div>
+                            <p class="font-cinzel text-3xl font-black text-white">1986</p>
+                            <p class="text-xs text-neutral-400 mt-2 uppercase tracking-wider font-light">
+                                Harris Tweed 系列首度展示 ORB 標誌
+                            </p>
+                        </div>
+                        <div>
+                            <p class="font-cinzel text-3xl font-black text-white">100%</p>
+                            <p class="text-xs text-neutral-400 mt-2 uppercase tracking-wider font-light">
+                                前衛英倫龐克精神與高級珠寶的衝擊
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+    <section id="craftsmanship" class="py-32 border-b border-white/10 bg-punk-carbon">
+        <div class="max-w-7xl mx-auto px-6">
+            
+            <div class="text-center max-w-3xl mx-auto mb-20 space-y-4 reveal">
+                <span class="text-xs tracking-[0.35em] text-neutral-400 uppercase font-semibold">ARTISANAL SPECIFICATIONS</span>
+                <h2 class="font-cinzel text-3xl md:text-5xl font-black text-white tracking-wide uppercase">
+                    微距細節與工藝特色
+                </h2>
+                <p class="text-neutral-400 text-sm font-light leading-relaxed">
+                    每一顆 ORB 衛星項鍊均經過精密的鑄造工程與手作細節處理，實現高階龐克配飾的極致工藝。
+                </p>
+            </div>
+
+            <!-- 3 Core Feature Cards Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                
+                <!-- Feature Card 01 -->
+                <div class="interactive-hover glass-panel p-8 border border-white/10 hover:border-white/40 transition-all duration-500 group flex flex-col justify-between reveal">
+                    <div>
+                        <div class="h-44 bg-punk-black border border-white/10 flex items-center justify-center mb-8 relative overflow-hidden">
+                            <!-- Schematic Vector 01 -->
+                            <svg viewBox="0 0 100 100" class="w-28 h-28 text-white/80 group-hover:scale-110 transition-transform duration-500">
+                                <circle cx="50" cy="50" r="32" fill="none" stroke="currentColor" stroke-width="1.5"/>
+                                <ellipse cx="50" cy="50" rx="44" ry="12" fill="none" stroke="currentColor" stroke-width="1.5" transform="rotate(-15 50 50)"/>
+                                <line x1="50" y1="10" x2="50" y2="90" stroke="currentColor" stroke-width="1" stroke-dasharray="2,2"/>
+                            </svg>
+                            <span class="absolute top-3 left-3 text-[9px] font-mono text-neutral-500">SPEC 01 // GEOMETRY</span>
+                        </div>
+                        <h3 class="font-cinzel text-lg font-bold text-white mb-3 uppercase tracking-wider">
+                            經典 ORB 標誌結構
+                        </h3>
+                        <p class="text-xs text-neutral-400 leading-relaxed font-light">
+                            將傳統皇室符號與土星環完美結合，精準呈現對稱與流線幾何的叛逆碰撞。
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Feature Card 02 -->
+                <div class="interactive-hover glass-panel p-8 border border-white/10 hover:border-white/40 transition-all duration-500 group flex flex-col justify-between reveal">
+                    <div>
+                        <div class="h-44 bg-punk-black border border-white/10 flex items-center justify-center mb-8 relative overflow-hidden">
+                            <!-- Schematic Vector 02 -->
+                            <svg viewBox="0 0 100 100" class="w-28 h-28 text-white/80 group-hover:scale-110 transition-transform duration-500">
+                                <polygon points="50,15 62,38 88,38 67,54 75,78 50,62 25,78 33,54 12,38 38,38" fill="none" stroke="currentColor" stroke-width="1.5"/>
+                                <circle cx="50" cy="50" r="8" fill="none" stroke="currentColor" stroke-width="1.2"/>
+                            </svg>
+                            <span class="absolute top-3 left-3 text-[9px] font-mono text-neutral-500">SPEC 02 // PAVÉ CRYSTALS</span>
+                        </div>
+                        <h3 class="font-cinzel text-lg font-bold text-white mb-3 uppercase tracking-wider">
+                            高精度水晶鑲嵌工藝
+                        </h3>
+                        <p class="text-xs text-neutral-400 leading-relaxed font-light">
+                            土星環與十字架表面精密密鑲多顆明亮切割水晶，展現冷冽亮眼的耀眼光澤。
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Feature Card 03 -->
+                <div class="interactive-hover glass-panel p-8 border border-white/10 hover:border-white/40 transition-all duration-500 group flex flex-col justify-between reveal">
+                    <div>
+                        <div class="h-44 bg-punk-black border border-white/10 flex items-center justify-center mb-8 relative overflow-hidden">
+                            <!-- Schematic Vector 03 -->
+                            <svg viewBox="0 0 100 100" class="w-28 h-28 text-white/80 group-hover:scale-110 transition-transform duration-500">
+                                <rect x="20" y="20" width="60" height="60" fill="none" stroke="currentColor" stroke-width="1.5"/>
+                                <rect x="35" y="35" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="3,3"/>
+                                <circle cx="50" cy="50" r="4" fill="currentColor"/>
+                            </svg>
+                            <span class="absolute top-3 left-3 text-[9px] font-mono text-neutral-500">SPEC 03 // PUNK ATTITUDE</span>
+                        </div>
+                        <h3 class="font-cinzel text-lg font-bold text-white mb-3 uppercase tracking-wider">
+                            無畏龐克精神
+                        </h3>
+                        <p class="text-xs text-neutral-400 leading-relaxed font-light">
+                            打破主流珠寶繁複規範，嚴選耐用低敏黃銅與真空黑釕電鍍，體現高級次文化宣言。
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Size Guide Trigger Button Bar -->
+            <div class="mt-16 text-center reveal">
+                <button id="btn-open-size-modal" class="interactive-hover inline-flex items-center space-x-3 border border-white/40 px-8 py-4 text-xs font-mono tracking-[0.25em] uppercase hover:bg-white hover:text-black transition">
+                    <i data-lucide="ruler" class="w-4 h-4"></i>
+                    <span>檢視鎖骨試戴長度指南 (SIZE & FIT GUIDE)</span>
+                </button>
+            </div>
+
+        </div>
+    </section>
+
+    <section id="reviews" class="py-32 border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-6">
+            
+            <div class="text-center max-w-3xl mx-auto mb-20 space-y-4 reveal">
+                <span class="text-xs tracking-[0.35em] text-neutral-400 uppercase font-semibold">EDITORIAL PRAISE</span>
+                <h2 class="font-cinzel text-3xl md:text-5xl font-black text-white tracking-wide uppercase">
+                    國際權威時尚媒體好評
+                </h2>
+                <p class="text-neutral-400 text-sm font-light leading-relaxed">
+                    見證全球頂尖時尚雜誌對 ORB 衛星項鍊的時代高度評價。
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                
+                <!-- Review Card 01 -->
+                <div class="glass-panel p-8 border border-white/10 flex flex-col justify-between space-y-6 reveal">
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="font-cinzel font-black text-xl text-white tracking-widest">VOGUE</span>
+                            <span class="text-[10px] font-mono text-neutral-500">UK EDITORIAL</span>
+                        </div>
+                        <p class="text-neutral-300 text-xs sm:text-sm leading-relaxed font-light italic">
+                            「Vivienne Westwood 的 ORB 衛星項鍊完美的將英國皇室的嚴謹與龐克次文化的狂放融合，至今依然是流行史上無可取代的經典符碼。」
+                        </p>
+                    </div>
+                    <div class="border-t border-white/10 pt-4 text-[10px] font-mono text-neutral-500 uppercase tracking-widest">
+                        CRITIC REVIEW ★★★★★
+                    </div>
+                </div>
+
+                <!-- Review Card 02 -->
+                <div class="glass-panel p-8 border border-white/10 flex flex-col justify-between space-y-6 reveal">
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="font-cinzel font-black text-xl text-white tracking-widest">DAZED</span>
+                            <span class="text-[10px] font-mono text-neutral-500">CULTURE ISSUE</span>
+                        </div>
+                        <p class="text-neutral-300 text-xs sm:text-sm leading-relaxed font-light italic">
+                            「這不只是一件配飾，更是一份屬於反叛者的獨白。土星環橫跨古典與科幻，讓配戴者擁有跨越時代的酷帥張力。」
+                        </p>
+                    </div>
+                    <div class="border-t border-white/10 pt-4 text-[10px] font-mono text-neutral-500 uppercase tracking-widest">
+                        EDITORIAL PICK ★★★★★
+                    </div>
+                </div>
+
+                <!-- Review Card 03 -->
+                <div class="glass-panel p-8 border border-white/10 flex flex-col justify-between space-y-6 reveal">
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="font-cinzel font-black text-xl text-white tracking-widest">Harper's BAZAAR</span>
+                            <span class="text-[10px] font-mono text-neutral-500">JEWELRY GUIDE</span>
+                        </div>
+                        <p class="text-neutral-300 text-xs sm:text-sm leading-relaxed font-light italic">
+                            「從倫敦國王路到全球時尚週，ORB 衛星項鍊以其高雅的金屬線條與精密密鑲水晶，始終佔據著高奢配飾的熱銷頂峰。」
+                        </p>
+                    </div>
+                    <div class="border-t border-white/10 pt-4 text-[10px] font-mono text-neutral-500 uppercase tracking-widest">
+                        MUST-HAVE ICON ★★★★★
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+    <section id="authenticity" class="py-32 border-b border-white/10 bg-punk-carbon">
+        <div class="max-w-7xl mx-auto px-6">
+            
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                
+                <div class="lg:col-span-5 space-y-6 reveal">
+                    <div class="flex items-center space-x-3 text-xs tracking-[0.35em] text-neutral-400 font-semibold uppercase">
+                        <i data-lucide="shield-check" class="w-4 h-4 text-white"></i>
+                        <span>NFC & BLOCKCHAIN VERIFICATION</span>
+                    </div>
+                    <h2 class="font-cinzel text-3xl md:text-5xl font-black text-white uppercase leading-tight">
+                        真品數位晶片<br/>防偽驗證查詢
+                    </h2>
+                    <p class="text-neutral-400 text-xs md:text-sm font-light leading-relaxed">
+                        每件原廠 Vivienne Westwood ORB 衛星項鍊均附有專屬防偽序號與加密 RFID/NFC 晶片。您可在此模擬輸入保證書序號進行典藏檔案認證。
+                    </p>
+                    <div class="p-4 border border-white/10 bg-punk-black font-mono text-[11px] text-neutral-400 space-y-1">
+                        <p>測試可用序號 (SAMPLE CODES):</p>
+                        <p class="text-white font-bold">• VW-1986-ORB</p>
+                        <p class="text-white font-bold">• VW-2026-NFC</p>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-7 reveal">
+                    <div class="glass-panel p-8 border border-white/20 space-y-6">
+                        <form id="auth-check-form" class="space-y-4">
+                            <label for="serial-input" class="block text-xs font-mono uppercase tracking-widest text-neutral-400">
+                                輸入產品保證書防偽序號 (SERIAL NUMBER)
+                            </label>
+                            <div class="flex flex-col sm:flex-row gap-3">
+                                <input type="text" id="serial-input" placeholder="例: VW-1986-ORB" required class="flex-grow bg-punk-black border border-white/30 text-white px-5 py-3 font-mono text-sm focus:outline-none focus:border-white uppercase placeholder-neutral-600 rounded-none"/>
+                                <button type="submit" class="interactive-hover bg-white text-black font-extrabold px-8 py-3 text-xs tracking-[0.2em] uppercase hover:bg-neutral-200 transition rounded-none">
+                                    驗證真品
+                                </button>
+                            </div>
+                        </form>
+
+                        <!-- Validation Result Display Container -->
+                        <div id="auth-result" class="hidden border border-white/20 p-6 bg-punk-black space-y-4 font-mono">
+                            <!-- Dynamic Content Inserted by JS -->
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+    <section id="cta" class="py-32 bg-white text-black relative overflow-hidden">
+        <div class="max-w-7xl mx-auto px-6 text-center space-y-10 relative z-10">
+            
+            <div class="space-y-4 max-w-3xl mx-auto reveal">
+                <span class="text-xs tracking-[0.4em] font-extrabold uppercase text-neutral-600 block">
+                    EXCLUSIVE EDITION
+                </span>
+                <h2 class="font-cinzel text-4xl sm:text-6xl md:text-7xl font-black uppercase tracking-tight leading-none text-black">
+                    OWN THE REBELLION
+                </h2>
+                <p class="text-neutral-700 text-sm md:text-base font-medium max-w-xl mx-auto pt-2">
+                    立即收藏 Vivienne Westwood 經典 SATELLITE ORB 項鍊，展現獨一無二的前衛高奢質感。
+                </p>
+            </div>
+
+            <!-- Interactive Size Selector Option -->
+            <div class="max-w-md mx-auto space-y-4 text-left reveal">
+                <div class="flex justify-between text-xs font-mono font-bold uppercase text-neutral-700">
+                    <span>CHAIN LENGTH / 鍊長選擇:</span>
+                    <button id="btn-open-size-modal-2" class="underline hover:text-black">長度指南 (SIZE GUIDE)</button>
+                </div>
+                <select id="chain-length-select" class="w-full bg-neutral-100 border border-black/30 p-3 font-mono text-xs uppercase text-black focus:outline-none">
+                    <option value="40cm">40 CM - CLAVICLE CHOKER (鎖骨鍊)</option>
+                    <option value="45cm" selected>45 CM - GOLDEN DROP (經典黃金點)</option>
+                    <option value="75cm">75 CM - STATEMENT LAYER (長鍊層次感)</option>
+                </select>
+            </div>
+
+            <div class="pt-4 reveal">
+                <a href="#cta" id="cta-buy-btn" class="interactive-hover inline-block bg-black text-white font-extrabold px-14 py-6 text-xs sm:text-sm tracking-[0.35em] uppercase hover:bg-neutral-800 transition-all transform hover:scale-105 shadow-2xl rounded-none">
+                    BUY NOW / 立即典藏
+                </a>
+            </div>
+
+            <div class="flex justify-center items-center space-x-8 text-xs font-mono text-neutral-500 tracking-widest pt-8 uppercase">
+                <span>100% AUTHENTIC GUARANTEE</span>
+                <span>•</span>
+                <span>EXPRESS WORLDWIDE SHIPPING</span>
+            </div>
+
+        </div>
+    </section>
+
+    <div id="size-guide-modal" class="fixed inset-0 z-50 bg-black/90 hidden items-center justify-center p-4 backdrop-blur-md">
+        <div class="glass-panel border border-white/20 max-w-2xl w-full p-8 relative space-y-6 my-auto max-h-[90vh] overflow-y-auto">
+            
+            <button id="btn-close-size-modal" class="absolute top-4 right-4 text-white hover:text-neutral-400 p-2">
+                <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+
+            <div class="space-y-2 border-b border-white/10 pb-4">
+                <span class="text-[10px] font-mono text-neutral-400 uppercase tracking-widest">FITMENT SPECIFICATIONS</span>
+                <h3 class="font-cinzel text-2xl font-bold text-white uppercase tracking-wider">鎖骨試戴長度視覺指南</h3>
+            </div>
+
+            <!-- SVG Torso Diagram with Chain Length Markers -->
+            <div class="bg-punk-black border border-white/10 p-6 flex items-center justify-center relative">
+                <svg viewBox="0 0 300 320" class="w-full max-w-xs h-auto text-white">
+                    <!-- Torso & Neck Line Art Silhouette -->
+                    <path d="M 110,20 Q 150,30 190,20 L 205,60 Q 230,80 280,100 L 280,310 L 20,310 L 20,100 Q 70,80 95,60 Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="4,4" opacity="0.3"/>
+                    <path d="M 120,60 Q 150,85 180,60" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.5"/>
+                    <!-- Collarbones -->
+                    <path d="M 70,105 Q 110,120 140,110" fill="none" stroke="currentColor" stroke-width="1.2" opacity="0.4"/>
+                    <path d="M 230,105 Q 190,120 160,110" fill="none" stroke="currentColor" stroke-width="1.2" opacity="0.4"/>
+
+                    <!-- 40cm Chain Drop Line -->
+                    <path id="path-40cm" d="M 125,60 Q 150,130 175,60" fill="none" stroke="#FFFFFF" stroke-width="2.5"/>
+                    <circle cx="150" cy="95" r="4" fill="#FFFFFF"/>
+                    <text x="160" y="98" fill="#FFFFFF" font-size="10" font-family="monospace">40 CM (鎖骨鍊)</text>
+
+                    <!-- 45cm Chain Drop Line -->
+                    <path id="path-45cm" d="M 122,60 Q 150,170 178,60" fill="none" stroke="#FFFFFF" stroke-width="2.5" opacity="0.5"/>
+                    <circle cx="150" cy="115" r="4" fill="#FFFFFF" opacity="0.5"/>
+                    <text x="160" y="118" fill="#FFFFFF" font-size="10" font-family="monospace" opacity="0.7">45 CM (黃金點)</text>
+
+                    <!-- 75cm Chain Drop Line -->
+                    <path id="path-75cm" d="M 118,60 Q 150,280 182,60" fill="none" stroke="#FFFFFF" stroke-width="2.5" opacity="0.5"/>
+                    <circle cx="150" cy="170" r="4" fill="#FFFFFF" opacity="0.5"/>
+                    <text x="160" y="173" fill="#FFFFFF" font-size="10" font-family="monospace" opacity="0.7">75 CM (長鍊層次)</text>
+                </svg>
+            </div>
+
+            <!-- Length Description Cards Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs font-mono">
+                <div class="border border-white/20 p-3 space-y-1 bg-white/5">
+                    <p class="text-white font-bold">40 CM 鎖骨鍊</p>
+                    <p class="text-neutral-400 text-[11px]">緊貼鎖骨凹槽，展現俐落高冷氣場，極適合搭開領襯衫或平口禮服。</p>
+                </div>
+                <div class="border border-white/20 p-3 space-y-1 bg-white/5">
+                    <p class="text-white font-bold">45 CM 黃金點</p>
+                    <p class="text-neutral-400 text-[11px]">經典標誌垂墜於胸口黃金交界，日常休閒與正裝皆能完美駕馭。</p>
+                </div>
+                <div class="border border-white/20 p-3 space-y-1 bg-white/5">
+                    <p class="text-white font-bold">75 CM 長鍊層次</p>
+                    <p class="text-neutral-400 text-[11px]">延伸至胸前中段，適合雙圈疊搭或配戴於高領毛衣外側展現次文化個性。</p>
+                </div>
+            </div>
+
+            <div class="border-t border-white/10 pt-4 flex justify-between items-center text-[10px] font-mono text-neutral-500">
+                <span>VIVIENNE WESTWOOD SIZING ARCHIVE</span>
+                <button id="btn-close-size-modal-footer" class="text-white underline uppercase">關閉指南</button>
+            </div>
+
+        </div>
+    </div>
+
+    <footer class="py-20 text-xs text-neutral-500 border-t border-white/10 bg-punk-black">
+        <div class="max-w-7xl mx-auto px-6 space-y-12">
+            
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-8 border-b border-white/10 pb-12">
+                <div class="space-y-3">
+                    <p class="font-cinzel text-white text-lg font-black tracking-[0.2em]">VIVIENNE WESTWOOD</p>
+                    <p class="text-xs font-cinzel text-neutral-400 italic">"Buy less, choose well, make it last."</p>
+                </div>
+                
+                <div class="flex flex-wrap gap-8 text-xs uppercase tracking-widest">
+                    <a href="#" class="interactive-hover hover:text-white transition">PRIVACY POLICY</a>
+                    <a href="#" class="interactive-hover hover:text-white transition">TERMS OF SERVICE</a>
+                    <a href="#" class="interactive-hover hover:text-white transition">BOUTIQUES</a>
+                    <a href="#" class="interactive-hover hover:text-white transition">INSTAGRAM</a>
+                </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row justify-between items-center text-[11px] text-neutral-600 space-y-4 sm:space-y-0 font-mono">
+                <p>© 2026 VIVIENNE WESTWOOD OFFICIAL COLLECTION. ALL RIGHTS RESERVED.</p>
+                <p>LONDON PUNK HERITAGE / DESIGNED FOR REBELS</p>
+            </div>
+
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            /* 1. Initialize Icons */
+            if (typeof lucide !== 'undefined' && lucide.createIcons) {
+                lucide.createIcons();
+            }
+
+            /* 2. Custom Lerp Saturn Cursor Logic */
+            initSaturnCursor();
+
+            /* 3. Parallax Scroll Effect Logic */
+            initParallaxEffect();
+
+            /* 4. Intersection Observer Scroll Reveal Logic */
+            initScrollReveal();
+
+            /* 5. Mobile Menu Toggle Logic */
+            initMobileMenu();
+
+            /* 6. Interactive CTA Button Handling */
+            initCtaButton();
+
+            /* 7. Initialize Three.js 360 ORB Viewer */
+            initThreeJsOrbViewer();
+
+            /* 8. Size Guide Modal Controls */
+            initSizeGuideModal();
+
+            /* 9. Authenticity Certificate Checker Logic */
+            initAuthenticityChecker();
+        });
+
+        /* SATURN CURSOR WITH SMOOTH LERP FOLLOW */
+        function initSaturnCursor() {
+            const dot = document.getElementById('cursor-dot');
+            const orb = document.getElementById('cursor-orb');
+            if (!dot || !orb) return;
+
+            let mouseX = -100, mouseY = -100;
+            let orbX = -100, orbY = -100;
+
+            window.addEventListener('mousemove', (e) => {
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+                dot.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0) translate(-50%, -50%)`;
+            });
+
+            function renderCursor() {
+                orbX += (mouseX - orbX) * 0.12;
+                orbY += (mouseY - orbY) * 0.12;
+                orb.style.transform = `translate3d(${orbX}px, ${orbY}px, 0) translate(-50%, -50%)`;
+                requestAnimationFrame(renderCursor);
+            }
+            requestAnimationFrame(renderCursor);
+
+            const interactiveElements = document.querySelectorAll('.interactive-hover, a, button, select, input');
+            interactiveElements.forEach(el => {
+                el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
+                el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
+            });
+        }
+
+        /* PARALLAX SCROLL EFFECT LOGIC */
+        function initParallaxEffect() {
+            const bgText = document.getElementById('hero-parallax-bg');
+            const fgVisual = document.getElementById('hero-parallax-fg');
+
+            window.addEventListener('scroll', () => {
+                const scrolled = window.pageYOffset;
+                if (scrolled < window.innerHeight) {
+                    if (bgText) bgText.style.transform = `translateY(${scrolled * 0.35}px)`;
+                    if (fgVisual) fgVisual.style.transform = `translateY(${scrolled * 0.12}px)`;
+                }
+            });
+        }
+
+        /* INTERSECTION OBSERVER SCROLL REVEAL */
+        function initScrollReveal() {
+            const reveals = document.querySelectorAll('.reveal');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                    }
+                });
+            }, {
+                threshold: 0.15
+            });
+
+            reveals.forEach(el => observer.observe(el));
+        }
+
+        /* MOBILE MENU TOGGLE */
+        function initMobileMenu() {
+            const btn = document.getElementById('mobile-menu-btn');
+            const menu = document.getElementById('mobile-menu');
+            if (!btn || !menu) return;
+
+            btn.addEventListener('click', () => {
+                menu.classList.toggle('hidden');
+            });
+
+            menu.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => menu.classList.add('hidden'));
+            });
+        }
+
+        /* CTA BUTTON INTERACTION */
+        function initCtaButton() {
+            const btn = document.getElementById('cta-buy-btn');
+            btn?.addEventListener('click', (e) => {
+                e.preventDefault();
+                const length = document.getElementById('chain-length-select')?.value || '45cm';
+                btn.textContent = `REGISTERED (${length})!`;
+                btn.classList.add('bg-neutral-800');
+                setTimeout(() => {
+                    btn.textContent = 'BUY NOW / 立即典藏';
+                    btn.classList.remove('bg-neutral-800');
+                }, 2500);
+            });
+        }
+
+        /* THREE.JS 360° INTERACTIVE 3D ORB RENDERER */
+        function initThreeJsOrbViewer() {
+            const container = document.getElementById('threejs-container');
+            if (!container || typeof THREE === 'undefined') return;
+
+            // Scene, Camera, Renderer
+            const scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x0d0d0d);
+
+            const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
+            camera.position.set(0, 0, 7);
+
+            const renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            container.appendChild(renderer.domElement);
+
+            // Metallic Material Definitions
+            const silverMaterial = new THREE.MeshStandardMaterial({
+                color: 0xdddddd,
+                metalness: 0.95,
+                roughness: 0.2,
+            });
+
+            const rutheniumMaterial = new THREE.MeshStandardMaterial({
+                color: 0x222225,
+                metalness: 0.9,
+                roughness: 0.3,
+            });
+
+            const goldMaterial = new THREE.MeshStandardMaterial({
+                color: 0xc5b382,
+                metalness: 0.85,
+                roughness: 0.25,
+            });
+
+            let currentMaterial = silverMaterial;
+
+            // ORB Composite Group Construction
+            const orbGroup = new THREE.Group();
+
+            // 1. Central Orb Sphere
+            const sphereGeo = new THREE.SphereGeometry(1.3, 32, 32);
+            const sphereMesh = new THREE.Mesh(sphereGeo, currentMaterial);
+            orbGroup.add(sphereMesh);
+
+            // 2. Saturn Ring
+            const ringGeo = new THREE.TorusGeometry(2.3, 0.08, 16, 100);
+            const ringMesh = new THREE.Mesh(ringGeo, currentMaterial);
+            ringMesh.rotation.x = Math.PI / 2.3;
+            ringMesh.rotation.y = Math.PI / 12;
+            orbGroup.add(ringMesh);
+
+            // 3. Top Cross Assembly
+            const crossGroup = new THREE.Group();
+            const vertGeo = new THREE.BoxGeometry(0.12, 0.6, 0.12);
+            const horizGeo = new THREE.BoxGeometry(0.5, 0.12, 0.12);
+            const crossV = new THREE.Mesh(vertGeo, currentMaterial);
+            const crossH = new THREE.Mesh(horizGeo, currentMaterial);
+            crossH.position.y = 0.08;
+            crossGroup.add(crossV);
+            crossGroup.add(crossH);
+            crossGroup.position.y = 1.6;
+            orbGroup.add(crossGroup);
+
+            // 4. Accent Pavé Spheres
+            const accentGeo = new THREE.SphereGeometry(0.08, 16, 16);
+            const positions = [
+                [0, 1.35, 0], [0, -1.35, 0], [1.35, 0, 0], [-1.35, 0, 0]
+            ];
+            positions.forEach(pos => {
+                const acc = new THREE.Mesh(accentGeo, currentMaterial);
+                acc.position.set(...pos);
+                orbGroup.add(acc);
+            });
+
+            scene.add(orbGroup);
+
+            // Lighting setup
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+            scene.add(ambientLight);
+
+            const pointLight1 = new THREE.PointLight(0xffffff, 2, 50);
+            pointLight1.position.set(5, 5, 5);
+            scene.add(pointLight1);
+
+            const pointLight2 = new THREE.PointLight(0xffffff, 1.5, 50);
+            pointLight2.position.set(-5, -5, 2);
+            scene.add(pointLight2);
+
+            // Drag Rotation Variables
+            let isDragging = false;
+            let previousMousePosition = { x: 0, y: 0 };
+            let autoRotate = true;
+
+            container.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                previousMousePosition = { x: e.clientX, y: e.clientY };
+            });
+
+            container.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                const deltaMove = {
+                    x: e.clientX - previousMousePosition.x,
+                    y: e.clientY - previousMousePosition.y
+                };
+
+                orbGroup.rotation.y += deltaMove.x * 0.01;
+                orbGroup.rotation.x += deltaMove.y * 0.01;
+
+                previousMousePosition = { x: e.clientX, y: e.clientY };
+            });
+
+            window.addEventListener('mouseup', () => { isDragging = false; });
+
+            // Touch support for mobile
+            container.addEventListener('touchstart', (e) => {
+                if (e.touches.length === 1) {
+                    isDragging = true;
+                    previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+                }
+            });
+
+            container.addEventListener('touchmove', (e) => {
+                if (!isDragging || e.touches.length !== 1) return;
+                const deltaMove = {
+                    x: e.touches[0].clientX - previousMousePosition.x,
+                    y: e.touches[0].clientY - previousMousePosition.y
+                };
+
+                orbGroup.rotation.y += deltaMove.x * 0.01;
+                orbGroup.rotation.x += deltaMove.y * 0.01;
+
+                previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+            });
+
+            container.addEventListener('touchend', () => { isDragging = false; });
+
+            // Material Finish Switcher Buttons
+            function updateMaterials(mat) {
+                orbGroup.traverse((child) => {
+                    if (child.isMesh) child.material = mat;
+                });
+            }
+
+            document.getElementById('finish-silver')?.addEventListener('click', (e) => {
+                updateMaterials(silverMaterial);
+                setActiveFinishBtn(e.target);
+            });
+            document.getElementById('finish-ruthenium')?.addEventListener('click', (e) => {
+                updateMaterials(rutheniumMaterial);
+                setActiveFinishBtn(e.target);
+            });
+            document.getElementById('finish-gold')?.addEventListener('click', (e) => {
+                updateMaterials(goldMaterial);
+                setActiveFinishBtn(e.target);
+            });
+
+            function setActiveFinishBtn(target) {
+                ['finish-silver', 'finish-ruthenium', 'finish-gold'].forEach(id => {
+                    const btn = document.getElementById(id);
+                    btn?.classList.remove('bg-white/20', 'border-white', 'text-white');
+                    btn?.classList.add('border-white/30', 'text-neutral-400');
+                });
+                target.classList.add('bg-white/20', 'border-white', 'text-white');
+            }
+
+            // Controls
+            const spinBtn = document.getElementById('btn-spin-toggle');
+            spinBtn?.addEventListener('click', () => {
+                autoRotate = !autoRotate;
+                spinBtn.textContent = autoRotate ? 'PAUSE AUTO-SPIN' : 'RESUME AUTO-SPIN';
+            });
+
+            document.getElementById('btn-reset-3d')?.addEventListener('click', () => {
+                orbGroup.rotation.set(0, 0, 0);
+            });
+
+            // Animation Render Loop
+            function animate() {
+                requestAnimationFrame(animate);
+                if (autoRotate && !isDragging) {
+                    orbGroup.rotation.y += 0.008;
+                }
+                renderer.render(scene, camera);
+            }
+            animate();
+
+            // Resize Handler
+            window.addEventListener('resize', () => {
+                if (!container) return;
+                camera.aspect = container.clientWidth / container.clientHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(container.clientWidth, container.clientHeight);
+            });
+        }
+
+        /* SIZE GUIDE MODAL HANDLER */
+        function initSizeGuideModal() {
+            const modal = document.getElementById('size-guide-modal');
+            const btnOpen1 = document.getElementById('btn-open-size-modal');
+            const btnOpen2 = document.getElementById('btn-open-size-modal-2');
+            const btnClose1 = document.getElementById('btn-close-size-modal');
+            const btnClose2 = document.getElementById('btn-close-size-modal-footer');
+
+            const openModal = () => modal?.classList.add('modal-active');
+            const closeModal = () => modal?.classList.remove('modal-active');
+
+            btnOpen1?.addEventListener('click', openModal);
+            btnOpen2?.addEventListener('click', openModal);
+            btnClose1?.addEventListener('click', closeModal);
+            btnClose2?.addEventListener('click', closeModal);
+
+            modal?.addEventListener('click', (e) => {
+                if (e.target === modal) closeModal();
+            });
+        }
+
+        /* AUTHENTICITY CERTIFICATE CHECKER LOGIC */
+        function initAuthenticityChecker() {
+            const form = document.getElementById('auth-check-form');
+            const input = document.getElementById('serial-input');
+            const resultBox = document.getElementById('auth-result');
+
+            form?.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const code = input.value.trim().toUpperCase();
+                if (!code || !resultBox) return;
+
+                resultBox.classList.remove('hidden');
+                resultBox.innerHTML = `
+                    <div class="text-neutral-400 text-xs animate-pulse">
+                        [SYSTEM] ENCRYPTED NFC / BLOCKCHAIN VERIFICATION IN PROGRESS...
+                    </div>
+                `;
+
+                setTimeout(() => {
+                    if (code.includes('VW') || code === 'VW-1986-ORB' || code === 'VW-2026-NFC') {
+                        resultBox.innerHTML = `
+                            <div class="flex items-start space-x-3 text-white">
+                                <span class="text-emerald-400 font-bold">✔ [VERIFIED AUTHENTIC]</span>
+                            </div>
+                            <div class="text-xs space-y-1 text-neutral-300 border-t border-white/10 pt-3">
+                                <p><span class="text-neutral-500">ITEM:</span> VIVIENNE WESTWOOD SATELLITE ORB NECKLACE</p>
+                                <p><span class="text-neutral-500">SERIAL ID:</span> ${code}</p>
+                                <p><span class="text-neutral-500">MANUFACTURE:</span> LONDON ARCHIVAL COUTURE SPEC</p>
+                                <p><span class="text-neutral-500">NFC SIGNATURE:</span> 0x8F92...E431 (VALIDATED)</p>
+                            </div>
+                        `;
+                    } else {
+                        resultBox.innerHTML = `
+                            <div class="text-red-400 font-bold">
+                                ✖ [INVALID / UNVERIFIED SERIAL]
+                            </div>
+                            <p class="text-xs text-neutral-400 pt-1">
+                                未能於認證庫中檢索到序號 「${code}」。請確認輸入是否正確，或聯繫原廠精品店協助人工複查。
+                            </p>
+                        `;
+                    }
+                }, 1000);
+            });
+        }
+    </script>
+</body>
+</html>
